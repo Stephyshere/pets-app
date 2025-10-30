@@ -101,22 +101,7 @@ El flujo de trabajo se basa en un modelo de integración continua simple pero ef
 
 ## 6. Evidencias Gráficas de Funcionamiento
 
-A continuación se muestran capturas de pantalla que evidencian el correcto funcionamiento del sistema.
-
-**1. Levantando el entorno local con Docker Compose:**
-*Aquí iría una captura de la terminal mostrando la salida de `docker-compose -f docker-compose.local.yml up` con los logs de la aplicación Spring y la base de datos MySQL iniciándose correctamente.*
-
-**2. Acceso a la Documentación Swagger UI:**
-*Aquí iría una captura del navegador mostrando la interfaz de Swagger en `http://localhost:8080/swagger-ui.html`, con el endpoint `/pet/list` visible.*
-
-**3. Respuesta del Endpoint `/pet/list`:**
-*Aquí iría una captura de pantalla de una herramienta como Postman o del propio Swagger UI mostrando una respuesta `200 OK` con un JSON que contiene una lista de mascotas.*
-
-**4. Ejecución del Workflow de GitHub Actions:**
-*Aquí iría una captura de la pestaña "Actions" del repositorio de GitHub, mostrando una ejecución exitosa (en verde) del workflow "Deploy to GitHub Pages".*
-
-**5. Javadoc Desplegado en GitHub Pages:**
-*Aquí iría una captura del navegador mostrando la página de Javadoc generada, accesible en la URL de GitHub Pages del repositorio.*
+NO HAY.
 
 ## 7. Conclusiones del Proyecto
 El proyecto ha cumplido con éxito todos sus objetivos. Se ha creado una aplicación robusta con Spring Boot que es fácil de desarrollar, probar y desplegar gracias a la contenerización con Docker.

@@ -1,104 +1,70 @@
 # Pets API
 
-Este proyecto contiene una API REST desarrollada con Java y Spring Boot para gestionar un listado de mascotas. La aplicación está diseñada para ser desplegada fácilmente utilizando Docker y puede conectarse a diferentes bases de datos gracias a los perfiles de Spring.
-
-Originalmente, este backend fue diseñado para ser consumido por un frontend simple en PHP que muestra el listado en una tabla.
+Este proyecto es una API REST desarrollada con Java y Spring Boot para la gestión de mascotas. La aplicación está contenerizada con Docker y configurada para ejecutarse en múltiples entornos (desarrollo local y nube) mediante el uso de perfiles de Spring.
 
 ## 🚀 Tecnologías Utilizadas
+- **Backend**: Java 21, Spring Boot 3.5, Spring Data JPA
+- **Build**: Maven
+- **Bases de Datos**: MySQL (local), PostgreSQL (Neon)
+- **Contenerización**: Docker, Docker Compose
+- **Documentación**: SpringDoc (Swagger UI), Javadoc
+- **CI/CD**: GitHub Actions
 
-- **Backend**:
-  - Java 21
-  - Spring Boot 3.5.6
-  - Spring Data JPA (Hibernate)
-  - Maven
-- **Bases de Datos Soportadas**:
-  - MySQL 8.0 (para desarrollo local)
-  - PostgreSQL (para el despliegue con Neon)
-- **Documentación API**:
-  - SpringDoc (Swagger UI)
-- **Contenerización**:
-  - Docker
-  - Docker Compose
-- **CI/CD**:
-  - GitHub Actions (para publicar Javadoc en GitHub Pages)
+## ⚙️ Comandos Básicos de Ejecución
 
-## 📋 Prerrequisitos
+A continuación se describen los comandos para levantar la aplicación según el entorno deseado.
 
-- Java 21
-- Maven
-- Docker y Docker Compose
-- Git
+### 1. Entorno Local (con Docker y MySQL)
 
-## ⚙️ Cómo Ejecutar el Proyecto (Paso a Paso)
+Este comando levanta la aplicación y una base de datos MySQL. Es el método recomendado para el desarrollo.
 
-Existen varias formas de levantar el proyecto, dependiendo de tus necesidades.
+```bash
+# Desde la raíz del proyecto
+docker-compose -f docker-compose.local.yml up --build
+```
 
-### Opción 1: Entorno Local con Docker Compose (Recomendado)
+La aplicación estará disponible en `http://localhost:8080`.
 
-Esta es la forma más sencilla de levantar todo el entorno de desarrollo. Se levantará un contenedor para la aplicación y otro para la base de datos MySQL.
+### 2. Entorno de Nube (con Docker y Neon DB)
 
-1.  **Clona el repositorio:**
-    ```bash
-    git clone https://github.com/tu-usuario/pets-app.git
-    cd pets-app
-    ```
+Este comando levanta la aplicación y la conecta a una base de datos PostgreSQL en Neon.
 
-2.  **Asegúrate de tener los scripts de Maven:**
-    Si el archivo `mvnw` no existe o no tiene permisos de ejecución, puedes generarlo con:
-    ```bash
-    mvn -N io.takari:maven:wrapper
-    # Otorga permisos de ejecución (importante en Linux/macOS)
-    chmod +x mvnw
-    ```
+**Prerrequisito:** Debes crear un archivo `.env` en la raíz del proyecto con tus credenciales.
 
-3.  **Levanta los contenedores:**
-    Utiliza el archivo `docker-compose.local.yml` para iniciar los servicios.
-    ```bash
-    docker-compose -f docker-compose.local.yml up --build
-    ```
-    El flag `--build` asegura que la imagen de Docker se reconstruya si has hecho cambios en el código.
+**`.env` file:**
+```
+NEON_DATABASE_URL=jdbc:postgresql://<tu-host>.neon.tech/neondb?sslmode=require
+NEON_USERNAME=<tu-usuario>
+NEON_PASSWORD=<tu-contraseña>
+```
 
-4.  **¡Listo!** La aplicación estará disponible en `http://localhost:8080`.
+**Comando de ejecución:**
+```bash
+# Desde la raíz del proyecto
+docker-compose -f docker-compose.neon.yml up --build
+```
 
-### Opción 2: Conexión a una Base de Datos Neon (PostgreSQL en la nube)
+### 3. Ejecución Nativa (sin Docker para la app)
 
-Este método es ideal para un entorno de *staging* o para probar la configuración de producción.
+Puedes ejecutar la aplicación directamente con Maven, conectándola a una base de datos que ya esté corriendo.
 
-1.  **Crea un archivo `.env`** en la raíz del proyecto con tus credenciales de Neon.
-    ```env
-    # c:\Users\canci\Documents\GitHub\pets-app\.env
-    NEON_DATABASE_URL=jdbc:postgresql://<tu-host>.neon.tech/neondb?sslmode=require
-    NEON_USERNAME=<tu-usuario>
-    NEON_PASSWORD=<tu-contraseña>
-    ```
-    **Importante:** Añade el archivo `.env` a tu `.gitignore` para no subir tus credenciales al repositorio.
+```bash
+# Activa el perfil 'local' para conectar a una BD MySQL en localhost:3306
+./mvnw spring-boot:run -Dspring-boot.run.profiles=local
+```
 
-2.  **Levanta el contenedor de la aplicación:**
-    ```bash
-    docker-compose -f docker-compose.neon.yml up --build
-    ```
-    Docker Compose leerá las variables del archivo `.env` y las pasará al contenedor de la aplicación.
+## ✅ Verificación del Perfil Activo
 
-### Opción 3: Ejecución Nativa (Sin Docker para la App)
+Cuando la aplicación Spring Boot se inicia, imprime en la consola el perfil que está utilizando. Para verificarlo, busca en los logs de inicio una línea similar a esta:
 
-Puedes ejecutar la aplicación directamente en tu máquina y conectarla a una base de datos (ya sea local o en un contenedor).
+```
+... : The following 1 profile is active: "local"
+```
 
-1.  **Inicia una base de datos MySQL.** Puedes usar Docker para ello:
-    ```bash
-    docker run -d -p 3306:3306 --name mysql-db -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=pets -e MYSQL_USER=user -e MYSQL_PASSWORD=password mysql:8.0
-    ```
+O, si estás usando el perfil de Neon:
 
-2.  **Ejecuta la aplicación Spring Boot** desde tu IDE o usando Maven. Las propiedades en `application-local.properties` están configuradas para conectarse a `localhost:3306`.
-    ```bash
-    ./mvnw spring-boot:run -Dspring-boot.run.profiles=local
-    ```
+```
+... : The following 1 profile is active: "neon"
+```
 
-## 📚 Documentación de la API
-
-Una vez que la aplicación está en ejecución, puedes acceder a la interfaz de Swagger para ver y probar los endpoints disponibles:
-
-**URL de Swagger UI:** http://localhost:8080/swagger-ui.html
-
-## 🔄 Integración Continua (CI)
-
-El proyecto está configurado con GitHub Actions (`.github/workflows/javadoc.yml`) para generar y desplegar automáticamente la documentación Javadoc del proyecto en GitHub Pages cada vez que se hace un `push` a la rama `main`.
+Esto confirma que la aplicación ha cargado la configuración correcta del fichero `application-<perfil>.properties` correspondiente.
